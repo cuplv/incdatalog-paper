@@ -61,7 +61,7 @@
 \begin{document}
 
 %% Title information
-\title[Short Title]{Full Title}         %% [Short Title] is optional;
+\title[Short Title]{Meta Analysis for Optimal Run-time Checking}         %% [Short Title] is optional;
                                         %% when present, will be used in
                                         %% header instead of Full Title.
 \titlenote{with title note}             %% \titlenote is optional;
@@ -183,7 +183,33 @@ Text of abstract \ldots.
 
 \section{Introduction}
 
-Text of paper \ldots
+Static analysis has several common failure modes where it is unable to discharge important safety and correctness assertions about programs. Common behaviors such as complicated loops, randomness/(stochastic behavior), and dynamic data loads (external interaction) frequently stymie static analyses. On the other hand, verifying these assertions via runtime checks requires a programmer to correctly reason about how and when to perform these checks, which can be difficult. We propose a middle-ground approach which performs \textit{online} static analyses to verify programs, and propose a tool which determines the optimal location to discharge assertions as early as possible.
+
+\section{Motivating Examples}
+
+Interval analysis (w/common static failure modes)
+Anderson's analysis ("")
+Typechecking ("", ref. GPCE)
+
+\section{Approach: meta-analysis}
+
+Req: program, programmer-provided annotation (to be discharged), analysis to be used to discharge the annotation, semantics for stepping program
+Tool:
+    Run analysis at each step, identify stoplight for annotation (red/yellow/green)
+        Modify analysis to handle running in-program? (several options)
+    Identify steps where stoplight result \textit{changes}
+    Return to user: location of optimal check, or perhaps "can't verify"
+
+\section{Worked examples}
+
+go back through motivating examples
+
+\section{Future work/Extensions}
+
+\textit{Incremental computation} fixes the efficiency problem, move the model from pre-production checking/program modification to in-production online verification
+
+\section{Conclusion}
+
 
 
 %% Acknowledgments
