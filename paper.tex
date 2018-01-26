@@ -1,5 +1,5 @@
 %% For double-blind review submission
-\documentclass[acmlarge,review,anonymous]{acmart}\settopmatter{printfolios=true}
+\documentclass[acmlarge,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission
 %\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission
@@ -16,6 +16,7 @@
 \usepackage{subcaption} %% For complex figures with subfigures/subcaptions
                         %% http://ctan.org/pkg/subcaption
 
+\usepackage{listings}
 
 \makeatletter\if@ACM@journal\makeatother
 %% Journal information (used by PACMPL format)
@@ -194,15 +195,53 @@ Typechecking ("", ref. GPCE)
 \section{Approach: meta-analysis}
 
 Req: program, programmer-provided annotation (to be discharged), analysis to be used to discharge the annotation, semantics for stepping program
+
 Tool:
-    Run analysis at each step, identify stoplight for annotation (red/yellow/green)
-        Modify analysis to handle running in-program? (several options)
-    Identify steps where stoplight result \textit{changes}
-    Return to user: location of optimal check, or perhaps "can't verify"
+
+Run analysis at each step, identify stoplight for annotation (red/yellow/green)
+
+Modify analysis to handle running in-program? (several options)
+
+Identify steps where stoplight result \textit{changes}
+
+Return to user: location of optimal check, or perhaps "can't verify"
+
 
 \section{Worked examples}
 
 go back through motivating examples
+
+\begin{lstlisting}
+1 a := new int[10];
+2 r := rand();
+3 if r < magicval then
+4   x := 5
+5 else
+6   x := 15
+7 return a[x]    
+\end{lstlisting}
+\begin{tabular}{l|l|l}
+  \multicolumn{3}{c}{\textbf{Analysis results for x at entry to line 7 }}
+  \\
+  Concrete execution & (Offline) Meta Analysis & Online Analysis
+  \\
+  \hline 
+  1 exit & undet          & [5, 15]
+  \\
+  2 exit & det / redgreen & [5,5] \emph{WORLD-OR} [15,15]
+  \\
+  3 exit & det            &
+  \\
+  4 exit & $\vdots$       
+  \\
+  5 exit
+  \\
+  6 exit
+  \\
+  7 exit
+\end{tabular}
+
+Standard interval analysis result for x at entry to 7 is [5, 15].
 
 \section{Future work/Extensions}
 
