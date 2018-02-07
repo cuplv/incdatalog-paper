@@ -243,6 +243,14 @@ go back through motivating examples
 
 Standard interval analysis result for x at entry to 7 is [5, 15].
 
+Alternate motivating example structure (following GPCE):
+
+\begin{lstlisting}
+1 arr := load_array(); // user/external data
+2 perform_complicated_workload();
+3 return a[5]; // failing on undersized array
+\end{lstlisting}
+
 \section{Future work/Extensions}
 
 \textit{Incremental computation} fixes the efficiency problem, move the model from pre-production checking/program modification to in-production online verification
