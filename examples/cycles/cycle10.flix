@@ -1,0 +1,1 @@
+Edge("node0", "node1").Edge("node1", "node2").Edge("node2", "node3").Edge("node3", "node4").Edge("node4", "node5").Edge("node5", "node6").Edge("node6", "node7").Edge("node7", "node8").Edge("node8", "node9").Edge("node9", "node0").
