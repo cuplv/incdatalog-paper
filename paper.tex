@@ -188,6 +188,50 @@ Programmers who use static analyses in their normal workflow will frequently dem
 
 Incremental computation is reasonably well understood for standard Datalog, which can express a small class of analyses. However, more expressiveness is needed to implement complex lattice-based analyses, particularly on infinite-height lattices, such as an interval analysis. We present the Patchwork framework, which extends the Datalog-based approach to allow for incremental implementations of general static analyses.
 
+%\newcommand{\TabYes}{\ensuremath{\ding{52}}}
+%\newcommand{\TabNo}{\ensuremath{\ding{53}}}
+\newcommand{\TabYes}{\ensuremath{\blacksquare}}
+\newcommand{\TabNo}{\ensuremath{\square}}
+
+\begin{table}
+\begin{tabular}{|p{1.3in}p{1.5in}||ccc|l|}
+  \hline
+  \textbf{program domain} &
+  \textbf{system feature} & Flix & IncA & Datafun & \emph{this paper}
+  \\
+  \hline
+  general &
+  first-class  
+  fixed points & \TabNo & \TabNo & \TabYes & \TabYes
+  \\
+  general &
+  user-defined
+  datatypes & \TabYes & ? & \TabYes & \TabYes
+  \\
+  \hline
+  datalog &
+  datalog engine & \TabYes & \TabYes & \TabYes & \TabYes~(definable)
+  \\
+  \hline
+  program analysis &
+  user-defined lattices & \TabYes & \TabYes & \TabNo & \TabYes
+  \\
+  program analysis &
+  non-monotone 
+  widening
+  & \TabYes & \TabNo & n/a & \TabYes
+  \\
+  program analysis &
+  relational 
+  analysis
+  & ? & \TabNo? & n/a & \TabYes
+  \\
+  \hline
+\end{tabular}
+\caption{By-feature comparison with related work on datalog semantics, and (incremental) datalog for program analysis.}
+\label{tab:relatedwork}
+\end{table}
+
 \section{Motivating Examples}
 
 Parity analysis (requires lattice)\\
