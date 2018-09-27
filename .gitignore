@@ -1,0 +1,10 @@
+# Latexmk build artifacts
+paper.aux
+paper.fdb_latexmk
+paper.fls
+paper.log
+paper.out
+paper.pdf
+
+# Emacs temp files
+*~

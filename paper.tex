@@ -18,6 +18,10 @@
 
 \usepackage{listings}
 
+\usepackage{hyperref}
+\hypersetup{colorlinks = true,linkcolor = blue, urlcolor=blue}
+
+
 \makeatletter\if@ACM@journal\makeatother
 %% Journal information (used by PACMPL format)
 %% Supplied to authors by publisher for camera-ready submission
@@ -250,6 +254,49 @@ go back through motivating examples: parity analysis
 2 while x < rand()
 3   x++;
 \end{lstlisting}
+
+
+\subsection{Proposed Example with Relational Domain}
+
+Consider the following simple program, which takes 1000 random walks of length 3 in $\mathbb{Z}$ and tracks how many walks end at each possible integer. (example taken from Min\'e \href{https://pdfs.semanticscholar.org/ccb9/2bfe24199455d7c4a430f756c915cd4e5ae8.pdf}{slides})
+\begin{lstlisting}
+1 hit = {-3:0, -1:0, 1:0, 3:0}
+2 for k = 1 to 1000:
+3   x = 0
+4   for i = 1 to 3:
+5     if random() then x++ else x--
+6   hit[x] = hit[x] + 1
+\end{lstlisting}
+
+A non-relational analysis would be unable to show that \texttt{x} is in the domain of \texttt{hit} on line 6, since such a proof depends on the relationship between $i$ and $x$ in the inner for loop.  However,  using a relational abstract domain such as octagon, we can express the constraint that $|x|\leq i$ in the inner for loop.  Note that this is still insufficient to show that the result will always be odd; we could, however, combine with a parity domain to show that, not only are the results in $[-3,3]$ (from octagon), they're also in $2\mathbb{Z}+1$ (from parity).
+
+We can easily vary the number of random walks taken or the length of each walk to ``grow'' the program and show asymptotic scaling.  However, if I understood Matt's messages correctly, that doesn't address the question of an ``edit model''.  I'll be talking to Jared about what such an edit model might look like here.
+
+\iffalse NOTE(benno): also considered a couple other examples, noting here as alternatives that could be further pursued if neeeded:
+
+This one needs relational analysis to statically discharge the assertion, but there's no good way I see initially to vary the size of the program.
+  x = 0;
+  y = 0;
+  if rand():
+    x = 1
+  else:
+    y = 1
+    assert !(x && y)
+
+This one comes directly from the original octagon analysis paper.  It also has a nice relational story, but is similarly hard to vary the size of the program, though it is straightforward to change some initial parameters for incremental edits.
+    x = 10
+    y = 0
+    while(x > 0):
+      x--;
+      if(*):
+        y++
+    assert(x+y <= 10)  
+A non-relational analysis would not be able to statically discharge the assertion, concluding only that $x\in (-\infty,10]$ and $y\in [0,\infty)$.  However, a relational domain like octagon is able to statically discharge the assertion using a loop invariant of $x+y\leq10\wedge-x-y\leq10$
+
+I also played around for a while with string substring operations (where we'd have to relate the length of the substring to the total length of the list and the beginning index to prove accesses safe) but couldn't come up with a clean simple example to work with.
+\end{lstlisting}
+\fi
+
 
 \section{Evaluation}
 
