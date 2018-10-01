@@ -21,6 +21,8 @@
 \usepackage{hyperref}
 \hypersetup{colorlinks = true,linkcolor = blue, urlcolor=blue}
 
+\usepackage{xcolor}
+
 
 \makeatletter\if@ACM@journal\makeatother
 %% Journal information (used by PACMPL format)
@@ -236,6 +238,31 @@ Incremental computation is reasonably well understood for standard Datalog, whic
 \label{tab:relatedwork}
 \end{table}
 
+\begin{table}[]
+    \centering
+    \begin{tabular}{|c|l|c|c|c|c|}
+        \hline
+        \# & stmt & result & 1: x = 9 & 6: y += 2 & 4: x -= 2 \\
+        \hline
+        1 & x = 10; & & & &\\
+        \hline
+        2 & y = 0; & x + y $\le$ 10 & \textcolor{red}{x + y $\le$ 9} & x + y $\le$ 9 & x + y $\le$ 9\\
+        \hline
+        3 & while x > 0: & x + y $\le$ 10 & \textcolor{red}{x + y $\le$ 9} & \textcolor{red}{x + y $\le \infty$} & \textcolor{red}{x + y $\le$ 9}\\
+        \hline
+        4 & \hspace*{0.3cm} x- - & x + y $\le$ 9 & \textcolor{red}{x + y $\le$ 8} & \textcolor{red}{x + y $\le \infty$} & \textcolor{red}{x + y $\le$ 7}\\
+        \hline
+        5 & \hspace*{0.3cm} if* & & & &\\
+        \hline
+        6 & \hspace*{0.6cm} y++ & x + y $\le$ 10 & \textcolor{red}{x + y $\le$ 9} & \textcolor{red}{x + y $\le \infty$} & \textcolor{red}{x + y $\le$ 9}\\
+        \hline
+        7 & assert(x + y $\le$ 10) & true & true & \textcolor{red}{false} & \textcolor{red}{true}\\
+        \hline
+    \end{tabular}
+    \caption{Caption}
+    \label{tab:my_label}
+\end{table}
+
 \section{Motivating Examples}
 
 Parity analysis (requires lattice)\\
@@ -294,7 +321,6 @@ This one comes directly from the original octagon analysis paper.  It also has a
 A non-relational analysis would not be able to statically discharge the assertion, concluding only that $x\in (-\infty,10]$ and $y\in [0,\infty)$.  However, a relational domain like octagon is able to statically discharge the assertion using a loop invariant of $x+y\leq10\wedge-x-y\leq10$
 
 I also played around for a while with string substring operations (where we'd have to relate the length of the substring to the total length of the list and the beginning index to prove accesses safe) but couldn't come up with a clean simple example to work with.
-\end{lstlisting}
 \fi
 
 
