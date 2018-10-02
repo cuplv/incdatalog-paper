@@ -21,6 +21,9 @@
 \usepackage{hyperref}
 \hypersetup{colorlinks = true,linkcolor = blue, urlcolor=blue}
 
+\usepackage{tikz}
+\usetikzlibrary{tikzmark}
+
 \usepackage{xcolor}
 
 
@@ -321,8 +324,44 @@ This one comes directly from the original octagon analysis paper.  It also has a
 A non-relational analysis would not be able to statically discharge the assertion, concluding only that $x\in (-\infty,10]$ and $y\in [0,\infty)$.  However, a relational domain like octagon is able to statically discharge the assertion using a loop invariant of $x+y\leq10\wedge-x-y\leq10$
 
 I also played around for a while with string substring operations (where we'd have to relate the length of the substring to the total length of the list and the beginning index to prove accesses safe) but couldn't come up with a clean simple example to work with.
+
+
+
 \fi
 
+\begin{table}[]
+  \centering
+  \def\arraystretch{2}
+    \begin{tabular}{r|l|ll}
+        \# & Statement & \multicolumn{2}{l}{Analysis State Progression} \\
+        \midrule
+        1 & \texttt{x = 10;} &$\top$\tikzmark{a} & \\
+        \hline
+        2 & \texttt{y = 0;} & $x+y\leq10$ & \\
+        \hline
+        3 & \texttt{while(x > 0)} & $x+y\leq10$ & \\
+        \hline
+        4 & \quad\texttt{x--;} &  $x+y\leq9$& \\
+        \hline
+        5 & \quad\texttt{if(*)\{} & & \tikzmark{b}Arrow testing 1 2 3\\
+        \hline
+        6 & \qquad\texttt{y++} & $x+y\leq10$& \\
+        \hline
+        7 & \quad\texttt{\}} & $x+y\leq10$ & \\
+        \hline
+%        8 & \qquad$\epsilon$ & $x+y\leq9$& \\
+%        \hline
+        8 & \texttt{assert(x + y $\le$ 10)} & $x+y\leq10$ & \\
+    \end{tabular}
+
+    \begin{tikzpicture}[overlay,remember picture, shorten >=-3pt]
+      \draw[->, red, rounded corners=8pt](pic cs:a) |- ([xshift = -5pt,yshift = 3pt]pic cs:b);
+    \end{tikzpicture}
+    
+    \caption{WIP Attempt at an ``ATT'': Analysis Trace Table (tentative name)}
+    \label{tab:ATT}
+% - Table showing fixpoint computation, with a row per program location and a column per ``iterate'' (i.e. abstract state value at that location).  So height of table is ~~ `n` and width is `m` in O(n*m) complexity of Tarski fixpoint: n is number of locations, m lattice height.  Thread arrows throughout table to represent worklist causation relation - so that the order of the fixpoint computation is shown, even though the table is 2d with a ragged right edge
+\end{table}
 
 \section{Evaluation}
 
