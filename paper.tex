@@ -331,36 +331,63 @@ I also played around for a while with string substring operations (where we'd ha
 
 \begin{table}[]
   \centering
+  \newcommand{\location}{\tikz\draw[green!65!black,fill=green!65!black] (0,0) circle (.4ex);}
   \def\arraystretch{2}
-    \begin{tabular}{r|l|ll}
-        \# & Statement & \multicolumn{2}{l}{Analysis State Progression} \\
+    \begin{tabular}{r|l|ccl}
+        \# & Program Location & \multicolumn{3}{l}{Analysis State Progression} \\
         \midrule
-        1 & \texttt{x = 10;} &$\top$\tikzmark{a} & \\
+        1 & \texttt{x = 10;\location} &\quad&$\{\}$\tikzmark{1a} & \\
         \hline
-        2 & \texttt{y = 0;} & $x+y\leq10$ & \\
+        2 & \texttt{y = 0;\location} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{2a} & \hspace{1em}$\{x+y\leq10\}$\tikzmark{2b}\\
         \hline
-        3 & \texttt{while(x > 0)} & $x+y\leq10$ & \\
+        3 & \texttt{while(x > 0)\{\location} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{3a} & \tikzmark{3b}\\
         \hline
-        4 & \quad\texttt{x--;} &  $x+y\leq9$& \\
+        4 & \quad\texttt{x--;\location} &$\bot$\quad&  $\{x+y\leq9\}$\tikzmark{4a}& \\
         \hline
-        5 & \quad\texttt{if(*)\{} & & \tikzmark{b}Arrow testing 1 2 3\\
+        5 & \quad\texttt{if(*) \{y++;\location\}} &$\bot$\quad&$\{x+y\leq10\}$\tikzmark{5a}& \\
         \hline
-        6 & \qquad\texttt{y++} & $x+y\leq10$& \\
+        6 & \quad\texttt{else \{$\epsilon$;\location\}} &$\bot$\quad& $\{x+y\leq9\}$\tikzmark{6a} & \\
         \hline
-        7 & \quad\texttt{\}} & $x+y\leq10$ & \\
+        7 & \location\texttt{\}} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{7a} & \tikzmark{7b}\\
         \hline
 %        8 & \qquad$\epsilon$ & $x+y\leq9$& \\
 %        \hline
-        8 & \texttt{assert(x + y $\le$ 10)} & $x+y\leq10$ & \\
+        8 & \location~\texttt{assert(x + y $\le$ 10)} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{8a} & \hspace{1em}$\{x+y\leq10\}$\tikzmark{8b}\\
     \end{tabular}
 
+    \newcommand{\abovetext}{10pt}
+    \newcommand{\belowtext}{-4pt}
+    
     \begin{tikzpicture}[overlay,remember picture, shorten >=-3pt]
-      \draw[->, red, rounded corners=8pt](pic cs:a) |- ([xshift = -5pt,yshift = 3pt]pic cs:b);
+      \coordinate (1a) at ([xshift=-0.46em]pic cs:1a) ;
+      \coordinate (2a) at (pic cs:2a);
+      \coordinate (3a) at (pic cs:3a);
+      \coordinate (4a) at (pic cs:4a);
+      \coordinate (5a) at (pic cs:5a);
+      \coordinate (6a) at (pic cs:6a);
+      \coordinate (7a) at (pic cs:7a);
+      \coordinate (8a) at (pic cs:8a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a) -- ([yshift = \abovetext]1a|-2a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a|-2a) -- ([yshift = \abovetext]1a|-3a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a|-3a) -- ([yshift = \abovetext]1a|-4a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a|-4a) -- ([yshift = \abovetext]1a|-5a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a|-4a)
+      to [out=270,in=90] ([xshift=0.6em,yshift=0.2em] pic cs:5a)
+      to [out=270,in=90] ([yshift = \abovetext]1a|-6a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a|-5a)
+      to [out=270,in=90] ([xshift=-5.25em,yshift=0.25em] pic cs:6a)
+      to [out=270,in=90] ([yshift = \abovetext]1a|-7a);
+      \draw[->, blue!75!black] ([yshift=\belowtext]1a|-6a) -- ([yshift = \abovetext]1a|-7a);
+      \draw[->, blue!75!black,rounded corners=4pt] ([yshift=4pt,xshift=1pt] pic cs:7a) -| ([xshift=-1pt] pic cs:3b) |- ([xshift=-5.5em, yshift=3pt]pic cs:2b);
+      \draw[->, blue!75!black,rounded corners=4pt] ([yshift=4pt,xshift=1pt] pic cs:7a) -| ([yshift=-5pt, xshift=-1pt] pic cs:7b) |- ([xshift=-5.5em, yshift=3pt]pic cs:8b);
+      \draw[->, blue!75!black,rounded corners=3pt] ([yshift=3pt,xshift=-5.25em] pic cs:2a) -| ([xshift=-5.65em,yshift=0.35em] pic cs:6a) |- ([yshift=3pt,xshift=-5.5em] pic cs:8a);
     \end{tikzpicture}
     
-    \caption{WIP Attempt at an ``ATT'': Analysis Trace Table (tentative name)}
+    \caption{ Visualization of fix-point computation for a program analyzer performing octagon analysis on the example program from Fig.~\ref{???}.
+      Program locations in the abstract syntax are denoted by green circles in the concrete syntax.  The blue arrows illustrate a ``trace'' of the worklist/fix-point computation, showing the propagation of dataflow analysis results through the program.
+%      Thus, the full history of partially-computed abstract states at a particular location is recorded from left to right in the ``Analysis State Progression'' column.
+    }
     \label{tab:ATT}
-% - Table showing fixpoint computation, with a row per program location and a column per ``iterate'' (i.e. abstract state value at that location).  So height of table is ~~ `n` and width is `m` in O(n*m) complexity of Tarski fixpoint: n is number of locations, m lattice height.  Thread arrows throughout table to represent worklist causation relation - so that the order of the fixpoint computation is shown, even though the table is 2d with a ragged right edge
 \end{table}
 
 \section{Evaluation}
