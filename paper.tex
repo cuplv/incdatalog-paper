@@ -350,9 +350,7 @@ I also played around for a while with string substring operations (where we'd ha
         \hline
         7 & \location\texttt{\}} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{7a} & \tikzmark{7b}\\
         \hline
-%        8 & \qquad$\epsilon$ & $x+y\leq9$& \\
-%        \hline
-        8 & \location~\texttt{assert(x + y $\le$ 10)} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{8a} & \hspace{1em}$\{x+y\leq10\}$\tikzmark{8b}\\
+        8 & \location~\texttt{assert(x + y $\le$ 10)} &$\bot$\quad& $\{x+y\leq10\}$\tikzmark{8a} & \\
     \end{tabular}
 
     \newcommand{\abovetext}{10pt}
@@ -379,7 +377,7 @@ I also played around for a while with string substring operations (where we'd ha
       to [out=270,in=90] ([yshift = \abovetext]1a|-7a);
       \draw[->, blue!75!black] ([yshift=\belowtext]1a|-6a) -- ([yshift = \abovetext]1a|-7a);
       \draw[->, blue!75!black,rounded corners=4pt] ([yshift=4pt,xshift=1pt] pic cs:7a) -| ([xshift=-1pt] pic cs:3b) |- ([xshift=-5.5em, yshift=3pt]pic cs:2b);
-      \draw[->, blue!75!black,rounded corners=4pt] ([yshift=4pt,xshift=1pt] pic cs:7a) -| ([yshift=-5pt, xshift=-1pt] pic cs:7b) |- ([xshift=-5.5em, yshift=3pt]pic cs:8b);
+%      \draw[->, blue!75!black,rounded corners=4pt] ([yshift=4pt,xshift=1pt] pic cs:7a) -| ([yshift=-5pt, xshift=-1pt] pic cs:7b) |- ([xshift=-5.5em, yshift=3pt]pic cs:8b);
       \draw[->, blue!75!black,rounded corners=3pt] ([yshift=3pt,xshift=-5.25em] pic cs:2a) -| ([xshift=-5.65em,yshift=0.35em] pic cs:6a) |- ([yshift=3pt,xshift=-5.5em] pic cs:8a);
     \end{tikzpicture}
     
