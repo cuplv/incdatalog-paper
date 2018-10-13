@@ -197,6 +197,32 @@ Programmers who use static analyses in their normal workflow will frequently dem
 
 Incremental computation is reasonably well understood for standard Datalog, which can express a small class of analyses. However, more expressiveness is needed to implement complex lattice-based analyses, particularly on infinite-height lattices, such as an interval analysis. We present the Patchwork framework, which extends the Datalog-based approach to allow for incremental implementations of general static analyses.
 
+\begin{figure}
+\begin{lstlisting}
+type Q
+type Inv
+type VisitRes = NoChange | Change Inv
+
+let visitloc : Inv -> Loc -> VisitRes =
+  lam inv loc. 
+    ...(elided program analysis logic)...
+    ...
+    ...   let inv' = update inv name loc absstate ;
+    ...   Change inv'
+    ...
+    ...(elided program analysis logic)...
+
+letrec loop : Inv -> Q -> Inv =
+  lam inv q.
+    match pop q with
+      None -> inv
+      Some q loc ->
+         match visitloc loc inv with
+           NoChange -> loop inv q
+           Change inv -> loop inv (push q (succof loc))    
+\end{lstlisting}
+\end{figure}
+
 %\newcommand{\TabYes}{\ensuremath{\ding{52}}}
 %\newcommand{\TabNo}{\ensuremath{\ding{53}}}
 \newcommand{\TabYes}{\ensuremath{\blacksquare}}
