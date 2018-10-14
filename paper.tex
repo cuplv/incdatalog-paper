@@ -17,6 +17,7 @@
                         %% http://ctan.org/pkg/subcaption
 
 \usepackage{listings}
+\lstset{}
 
 \usepackage{hyperref}
 \hypersetup{colorlinks = true,linkcolor = blue, urlcolor=blue}
@@ -66,6 +67,108 @@
 %% issue of PACMPL.
 \citestyle{acmauthoryear}   %% For author/year citations
 
+% Darker versions (dRed, dBlue, etc.) of common colours;
+% pure red/blue/green are violently garish, and too light in monochrome.
+%
+% dDkRed, etc. are darker still.
+% dLight[er]{Blue|Purple} are lighter colours suitable for backgrounds.
+%
+% dFaint, dGray, dDark, dAlmostBlack are shades of gray.
+%
+\definecolor{dRed}{rgb}{0.65, 0.0, 0.0}
+\definecolor{dDkRed}{rgb}{0.35, 0.0, 0.0}
+\definecolor{dGreen}{rgb}{0.0, 0.65, 0.0}
+\definecolor{dDkGreen}{rgb}{0.0, 0.35, 0.0}
+\definecolor{dBlue}{rgb}{0.0, 0.0, 0.65}
+\definecolor{dLightBlue}{rgb}{0.4, 0.4, 0.9}
+\definecolor{dLighterBlue}{rgb}{0.8, 0.8, 1.0}
+\definecolor{dDkBlue}{rgb}{0.0, 0.0, 0.45}
+\definecolor{dLightPurple}{rgb}{0.9, 0.5, 0.9}
+\definecolor{dLighterPurple}{rgb}{1.0, 0.7, 1.0}
+\definecolor{dPurple}{rgb}{0.65, 0.0, 0.65}
+\definecolor{dDigPurple}{rgb}{0.5, 0.0, 0.5}
+% \definecolor{DDIGPURPLE}{rgb}{0.5, 0.0, 0.5}  % laughable
+\definecolor{dFaint}{rgb}{0.7, 0.7, 0.7}
+\definecolor{dGray}{rgb}{0.5, 0.5, 0.5}
+\definecolor{dDark}{rgb}{0.2, 0.2, 0.2}
+\definecolor{dAlmostBlack}{rgb}{0.1, 0.1, 0.1}
+
+%%% ------- Fungi code in latex listings:
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkpurple}{rgb}{0.5,0,0.5}
+\lstset{emph={Nm, Nat, Ref, Type, type, match, with, if, then, else, not, in, let, letrec, ref, get, thunk, force, scope, leaf, NmSet, Nat, Nm, idxtm, nmtm},
+  %emphstyle={\color{blue}\bfseries},
+  emphstyle={\bfseries},
+  keywordstyle={\bfseries},
+  commentstyle={\color{darkpurple}\ttfamily},
+  language=C,
+  showstringspaces=false,
+}%
+\lstset{emph={[2]%  
+    true, false,
+    },emphstyle={[2]\color{darkgreen}\bfseries}%,
+}%
+\newcommand{\code}[1]{\lstinline[basicstyle=\ttfamily]|#1|}
+\newcommand{\hlcode}[1]{{\hl{\texttt{#1}}}}
+\newcommand{\vttfamily}{\fontfamily{cmvtt}\selectfont}
+\lstset{
+%basicstyle=\fontsize{7}{8}\ttfamily,
+basicstyle=\fontsize{8}{9}\ttfamily,
+mathescape=true,
+literate={lam~}{$\lambda$}1
+         %%%%%%%%%%% Arrows
+         %%%%%%%%%%% ---------------------
+         {...}{${\color{blue}{\cdots}}$}3
+         {=>}{$\Rightarrow$}2
+         {<=}{$\leq$}2
+         {->}{$\rightarrow$}2
+         {nm->}{$\rightarrow$}2 %-- Name term function sort
+         {idx->}{$\rightarrow$}2 %-- Index term function sort
+         {idx=>}{$\Rightarrow$}2 %-- Kind arrow: sort to kind
+         %% {->}{${\color{dBlue}{\rightarrow}}$}2
+         %% {nm->}{${\color{dPurple}{\rightarrow}}$}2 %-- Name term function sort
+         %% {idx->}{${\color{dRed}{\rightarrow}}$}2 %-- Index term function sort
+         %% {idx=>}{${\color{dRed}{\Rightarrow}}$}2 %-- Kind arrow: sort to kind
+         %%%%%%%%%% Balanced delims:
+         %%%%%%%%%% --------------------------------
+         % {{ ... }} = Name set literals (index terms)
+         {<~}{${\color{dRed}{\left\{\right.}}$}1
+         {~>}{${\color{dRed}{\left.\right\}}}$}1
+         % [[ ... ]] = Annotations of types with index terms (e.g., name sets)
+         {[[}{${\color{dRed}{\left[\right.}}$}1
+         {]]}{${\color{dRed}{\left.\right]}}$}1
+         % <[ ... ]> = Annotations of names (e.g., Write scope)
+         {<[}{${\color{dRed}{\left<\right.}}$}1
+         {]>}{${\color{dRed}{\left.\right>}}$}1
+         % [< ... >] = Thunk boundaries in concrete expression syntax
+         {[<}{${\color{blue}{\left\{\right.}}$}1
+         {>]}{${\color{blue}{\left.\right\}}}$}1
+         % << ... ,, ... >> = Binary name composition; primitive form
+         {<<}{${\color{dPurple}{\left<\right.\hspace{-4pt}\left<\right.}}$}1
+         {>>}{${\color{dPurple}{\left.\right>\hspace{-4pt}\left.\right>}}$}1
+         {,,}{${\color{dPurple}{,}}$}1
+         %%%%%%%%%%
+         %%%%%%%%%% Operators, and index term syntax:
+         %%%%%%%%%% ---------------------------------
+         {~@~}{${\color{dPurple}{\bullet}}$}1 %-- Binary name composition (for Nm sort)
+         {~@@~}{${\color{dRed}{\bullet}}$}1 %-- Binary name composition (for NmSet sort)
+         {~*}{${}^{{\color{dRed}{\ast}}}$}1 %-- Kleene star; for an index term function over an initial set
+         {@}{{\textcolor{violet}{@}}}1 %-- Name literal/constant
+         {^}{${\color{dRed}{\bot}}$}1 %--- Apart symbol
+         {forall~}{${\color{dRed}{\forall}}$}1 %--- Forall index terms
+         {exists~}{${\color{dRed}{\exists}}$}1 %--- Exists index term
+         {writeset~}{${\color{dRed}{\rhd}}$}1  %--- Write set (part of a computation type)
+         %%%%%%%%% Sorts:
+         %{NmSet}{{\color{dRed}{NmSet}\color{black}}}4
+         %% {leaf}{{\color{dPurple}{leaf}\color{black}}}3
+         %% {Nm~}{{\color{dPurple}{Nm}\color{black}}}2
+         %% %{Nat~}{{\color{dRed}{Nat}\color{black}}}4
+         {Nat~}{Nat}4
+         %% %%%%%%%%%% Declarations
+         %% %%%%%%%%%% ------------------------------------
+         %% {idxtm}{{\color{dRed}{idxtm}\color{black}}}4
+         %% {nmtm}{{\color{dPurple}{nmtm}\color{black}}}4
+}
 
 
 \begin{document}
@@ -204,23 +307,55 @@ type Inv
 type VisitRes = NoChange | Change Inv
 
 let visitloc : Inv -> Loc -> VisitRes =
-  lam inv loc. 
-    ...(elided program analysis logic)...
+  lam~inv.lam~loc.
     ...
+    ...   // subcase: Update the invariant mapping:
+    ...   let inv' = update inv loc absstate ;
+    ...   Change inv'
+    ...
+
+letrec loop : Inv -> Q -> Inv =
+  lam~inv.lam~q.
+    match pop q with
+      None => inv
+      Some q loc =>
+         match visitloc loc inv with
+           NoChange   => loop inv q
+           Change inv => loop inv (push q (succof loc))    
+\end{lstlisting}
+\caption{Analysis loop: Each ``visit'' to a program location has the
+  potential to \code{update} the invariant mapping \code{inv}; the
+  queue~{q} controls the schedule of these visits. }
+\end{figure}
+
+\begin{figure}
+\begin{lstlisting}
+/// Version with explicit naming strategy
+type Q[X:NmSet]
+type Inv[X:NmSet]
+type VisitRes[X:NmSet] = NoChange | Change (Inv[X])
+
+let visitloc : Inv[X] -> Loc[Y] -> exists Z|Z^X. VisitRes[X^Z] =
+  lam~inv.lam~loc.
+    ...
+    ...   // Construct a name Z such that Z^X
+    ...   let name : Nm[Z] = ... ;
     ...   let inv' = update inv name loc absstate ;
     ...   Change inv'
     ...
-    ...(elided program analysis logic)...
 
-letrec loop : Inv -> Q -> Inv =
-  lam inv q.
+letrec loop : Inv[X] -> Q[Y] -> exists Z|Z^X. Inv[X^Z] =
+  lam~inv.lam~q.
     match pop q with
-      None -> inv
-      Some q loc ->
+      None => inv
+      Some q loc =>
          match visitloc loc inv with
-           NoChange -> loop inv q
-           Change inv -> loop inv (push q (succof loc))    
+           NoChange   => loop inv q
+           Change inv => loop inv (push q (succof loc))
 \end{lstlisting}
+\caption{Analysis loop: Each ``visit'' to a program location has the
+  potential to \code{update} the invariant mapping \code{inv}; the
+  queue~{q} controls the schedule of these visits. }
 \end{figure}
 
 %\newcommand{\TabYes}{\ensuremath{\ding{52}}}
