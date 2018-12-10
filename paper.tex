@@ -430,11 +430,16 @@ letrec loop : Inv[X] -> Q[Y] -> exists Z|Z^X. Inv[X^Z] =
 \section{Motivating Examples}
 
 Parity analysis (requires lattice)\\
-Interval analysis (requires widening)
+Interval analysis (requires widening)\\
+Octagon analysis (relational)
 
-\section{Approach: fungilang + lattice?}
+\section{Contribution: Incremental Relation Structures}
 
-Present fungilang semantics
+We developed an incremental data structure to represent the abstract states necessary to back our static analyses. It is...
+
+\section{Contribution: Extending to Incremental Analysis Framework}
+
+We use the discussed data structures in a modular framework for implementing static analyses. Our framework is organized as follows...
 
 \section{Worked examples}
 
@@ -554,15 +559,19 @@ I also played around for a while with string substring operations (where we'd ha
 We evaluated our approach on a spread of analyses and target programs.
 
 Analyses:\\
-Simple interval? Points-to? Interprocedural?
+Interval, octagon.
 
 Programs:\\
-IncA benchmarks? Flix benchmarks? Both?
+IncA benchmarks?
 
 Edit model:\\
-Adopt IncA approach? Commit history? Other?
+Adopt IncA approach?
 
-We compare to {Flix/IncA}?
+We compare to: IncA, off-the-shelf analysis?
+
+We show: same alarm rates as off-the-shelf analysis, similar incremental performance as IncA. QoIs: cumulative time, alarm rates, false alarm rates
+
+We need: off-the-shelf analysis to use, benchmarks to use, edit model to use
 
 \section{Future work/Extensions}
 
