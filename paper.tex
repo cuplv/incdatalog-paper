@@ -95,6 +95,7 @@
 
 %%% ------- Fungi code in latex listings:
 \definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkred}{rgb}{0.6,0,0}
 \definecolor{darkpurple}{rgb}{0.5,0,0.5}
 \lstset{emph={Nm, Nat, Ref, Type, type, match, with, if, then, else, not, in, let, letrec, ref, get, thunk, force, scope, leaf, NmSet, Nat, Nm, idxtm, nmtm},
   %emphstyle={\color{blue}\bfseries},
@@ -111,6 +112,8 @@
 \newcommand{\code}[1]{\lstinline[basicstyle=\ttfamily]|#1|}
 \newcommand{\hlcode}[1]{{\hl{\texttt{#1}}}}
 \newcommand{\vttfamily}{\fontfamily{cmvtt}\selectfont}
+\newcommand{\remark}[1]{\textcolor{darkred}{$\blacktriangleright$#1$\blacktriangleleft$}}
+
 \lstset{
 %basicstyle=\fontsize{7}{8}\ttfamily,
 basicstyle=\fontsize{8}{9}\ttfamily,
@@ -256,7 +259,14 @@ literate={lam~}{$\lambda$}1
 %% Note: \begin{abstract}...\end{abstract} environment must come
 %% before \maketitle command
 \begin{abstract}
-Text of abstract \ldots.
+  Proposed abstract jedi text:
+  \begin{itemize}
+  \item Program analysis, to be useful for developers, must surface results quickly during development loop.
+  \item Recomputing analysis with each edit is inefficient, performs redundant work
+  \item Existing incremental techniques express limited class of analyses
+  \item Our technique uses fungi/adapton incremental techniques to incrementally recompute analyses on-demand, (1) guaranteeing from-scratch consistency, (2) performing minimal recomputation, and (3) expressing broader class of analyses than existing techniques.
+  \item Key insight: fine grained memo-matching on analysis execution traces, adapton-style dependency graph.
+  \end{itemize}
 \end{abstract}
 
 
@@ -296,9 +306,15 @@ Text of abstract \ldots.
 
 \section{Introduction}
 
-Programmers who use static analyses in their normal workflow will frequently demand the results of these analyses multiple times. For example, when working on code in an IDE, a programmer may make multiple small edits and request the results of an anlysis after each one. Since these edits are likely to be minor, performing the entire analysis from scratch each time is inefficient. This is a prime application for \textit{incremental computation} (insert typical IC story). 
+Programmers who use static analyses in their normal workflow will frequently demand the results of these analyses multiple times.
+For example, when working on code in an IDE, a programmer may make multiple small edits and request the results of an analysis after each one.
+However, since edits typically affect only a small region of the program, it is very inefficient to recompute a whole-program analysis with each edit.
 
-Incremental computation is reasonably well understood for standard Datalog, which can express a small class of analyses. However, more expressiveness is needed to implement complex lattice-based analyses, particularly on infinite-height lattices, such as an interval analysis. We present the Patchwork framework, which extends the Datalog-based approach to allow for incremental implementations of general static analyses.
+This is a prime application for \textit{incremental computation} (insert typical IC story). 
+
+Incremental computation is reasonably well understood for standard Datalog, which can express a limited class of analyses.\cite{flix, datafun, IncA, ???} However, more expressivity is needed \remark{Why? we need to justify this.} to implement complex lattice-based analyses, particularly those with infinite-height abstract domain lattices, including many popular numerical (e.g. intervals, octagons) and logical (e.g. separation logic, predicate abstraction) abstract domains.
+
+We present the Patchwork framework, which extends the Datalog-based approach \remark{Are we really ``extending'' a datalog approach? I'd be inclined to say something like ``unlike datalog approaches, we can do ...'' or avoid mentioning datalog altogether}to allow for incremental implementations of general static analyses.
 
 \begin{figure}
 \begin{lstlisting}
@@ -446,8 +462,6 @@ We use the discussed data structures in a modular framework for implementing sta
 See figures 1/2 for an outline of the driving functions for the incremental analysis. By exploiting the structure of the typical 'worklist' algorithm for static analysis, we can achieve incremental performance gains. 
 
 Our naming strategy works by reference to (insert defense of naming strategy - strictly location?) (reference to analysis trace visualization - given by Benno in table 3)
-
-
 
 \section{Worked examples}
 
