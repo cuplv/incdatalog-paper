@@ -264,7 +264,8 @@ literate={lam~}{$\lambda$}1
   \item Program analysis, to be useful for developers, must surface results quickly during development loop.
   \item Recomputing analysis with each edit is inefficient, performs redundant work
   \item Existing incremental techniques express limited class of analyses
-  \item Our technique uses fungi/adapton incremental techniques to incrementally recompute analyses on-demand, (1) guaranteeing from-scratch consistency, (2) performing minimal recomputation, and (3) expressing broader class of analyses than existing techniques.
+  \item Our technique takes an interpretative approach, avoiding the need to compile a program to a set of facts
+  \item This allows us to express a broader set of analyses over user-defined languages
   \item Key insight: fine grained memo-matching on analysis execution traces, adapton-style dependency graph.
   \end{itemize}
 \end{abstract}
@@ -312,9 +313,9 @@ However, since edits typically affect only a small region of the program, it is 
 
 This is a prime application for \textit{incremental computation} (insert typical IC story). 
 
-Incremental computation is reasonably well understood for standard Datalog, which can express a limited class of analyses.\cite{flix, datafun, IncA, ???} However, more expressivity is needed \remark{Why? we need to justify this.} to implement complex lattice-based analyses, particularly those with infinite-height abstract domain lattices, including many popular numerical (e.g. intervals, octagons) and logical (e.g. separation logic, predicate abstraction) abstract domains.
+Existing approaches are in what we call 'Datalog-style', wherein a program is transformed into a set of initial facts, and the analysis consists of applying a series of rules until a fixed-point is reached. Examples of this approach include Flix (non-incremental) and IncA (incremental). This approach loses access to the underlying program as the analysis runs, which poses problems for incremental computation. In particular, IncA cannot express analyses requiring the use of non-monotonic widening operators, which includes most that use infinite-height lattices, such as interval or \remark{compelling examples here}.
 
-We present the Patchwork framework, which extends the Datalog-based approach \remark{Are we really ``extending'' a datalog approach? I'd be inclined to say something like ``unlike datalog approaches, we can do ...'' or avoid mentioning datalog altogether}to allow for incremental implementations of general static analyses.
+We present the Patchwork framework, which uses Adapton's DCG-based incremental computation. This approach enables us to bring incremental programming's efficiency to general static analysis over arbitrary user-defined languages. Once the user writes a transfer function over their desired language for their desired analysis, Patchwork executes the analysis and performs any desired re-computations quickly.
 
 \begin{figure}
 \begin{lstlisting}
@@ -603,9 +604,9 @@ Interprocedural? Or doing that now?
 
 Incremental Datalog framework (which?):
 
-Flix: the Patchwork framework extends the work of the Flix authors. Specifically, Flix provides a Datalog extension with the ability to reason about lattices. Patchwork extends work done on incremental Datalog evaluation, to, effectively, incremental Flix evaluation. Notably, Flix evaluates (large numbers) of rules in the course of (example). This includes significant redundancy, due to (facts about their dependency analysis). Our approach automatically tracks these dependencies and improves performance by (numbers).
+Flix: Flix enriches the basic semantics of Datalog with lattices, making static analysis significantly easier to write. However, Flix is still tied to the core Datalog model - compiling a program to an initial set of facts, then applying a set of productions rules to a fixpoint - which limits the efficiency of the algorithm. Specifically, Flix evaluates (a lot) of rules in the course of (example), including a large number of redundant evaluations, due to (facts about their dependency analysis). The DCG-based approach automatically tracks dependencies in a much better (why, specifically) model, which improves efficiency.
 
-IncA: the IncA papers gives an algorithm for performing incremental evaluation of lattice-aware Datalog-style programs. The approach takes advantage of properties of monotonic operators on lattices to quickly update aggregations and Datalog relations. However, the monotonicity restriction rules out important program analyses, such as (those that depend on widening). The IncA framework cannot express our second worked example. Additionally, (performance).
+IncA: IncA effectively builds on work like that in Flix by adding explicit support for incremental computation. After running a static analysis, the user can modify the initial set of facts (implicitly modifying the program) and re-execute with some improvements in performance. IncA's approach takes advantage of properties of monotonic operators on lattices to quickly update analysis results for certain types of edits. However, the restrictions that all operators must be monotonic rules out common and important program analysis, such as (examples from above). For instance, IncA's framework could not express (our worked example) - they would instead have to use (different widening operator), which would significantly degrade the strength of the analysis (for reasons).
 
 \section{Conclusion}
 
