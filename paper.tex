@@ -320,9 +320,11 @@ We present the Patchwork framework, which uses Adapton's DCG-based incremental c
 We make the following contributions:
 
 \begin{enumerate}
-    \item We propose an efficient incremental naming strategy for the worklist algorithm over a CFG.
-    \item We provide an incremental abstract interpretation framework which can express any domain of interest. (Wording? Any domain + widening operator? Point is frees the monotonicity restriction)
-    \item We demonstrate that our framework is competitive, performance-wise, with 'Datalog-style' alternatives.
+    \item We propose an efficient incremental naming strategy for the worklist algorithm over a CFG.\\
+    Using Adapton requires a strategy for uniquely naming subcomputations inside an algorithm. The goal is to ensure that after a minor edit, identical subcomputations have the same name across runs, so that Adapton can re-use work from a prior run. We present a naming strategy which names the transfer function at each CFG node by the program location and current abstract state. We demonstrate that this achieves significant re-use across runs in the presence of typical small edits to a program.
+    \item We provide an incremental abstract interpretation framework which can express any domain of interest.\\
+    Patchwork allows clients to use our naming strategy for arbitrary abstract domains. The user must supply a language specification and an implementation of the desired transfer function. With this supplied, Patchwork runs the analysis and can execute incremental runs. We demonstrate the use of Patchwork on several numerical domains - parity and interval - but non-numerical domains can be used as well. There are no restrictions on the domains or transfer functions supplied by the user, an improvement over alternatives which require all operators to be monotonic.
+    \item We demonstrate that our framework is competitive, performance-wise, with 'Datalog-style' alternatives.\\
 \end{enumerate}
 
 \begin{figure}
@@ -587,8 +589,8 @@ Our evaluation seeks to answer several core research questions:
 
 \begin{enumerate}
     \item Does Patchwork achieve significant performance gains on incremental edits relative to a non-incremental baseline tool? (check overhead/speedup constants)
-    \item Is Patchwork competitive with alternative tools for incremental static analysis (IncA)? (direct comparison on parity analysis)
     \item Is the added expressivity of Patchwork relevant to clients? (check false alarm rates on impoverished interval analysis v. regular)
+    \item Is Patchwork competitive with alternative tools for incremental static analysis (IncA)? (direct comparison on parity analysis)
 \end{enumerate}
 
 We evaluated Patchwork on a series of benchmark programs (IncA's) using parity analysis, bad interval analysis, and normal interval analysis. We compare Patchwork's speed to Jandom on parity analysis (just that?). We compare Patchwork's speed to IncA on bad interval analysis. We compare the false alarm rate of the normal interval analysis to that of the bad interval analysis.
@@ -606,6 +608,8 @@ Incremental Datalog framework (which?):
 Flix: Flix enriches the basic semantics of Datalog with lattices, making static analysis significantly easier to write. However, Flix is still tied to the core Datalog model - compiling a program to an initial set of facts, then applying a set of productions rules to a fixpoint - which limits the efficiency of the algorithm. Specifically, Flix evaluates (a lot) of rules in the course of (example), including a large number of redundant evaluations, due to (facts about their dependency analysis). The DCG-based approach automatically tracks dependencies in a much better (why, specifically) model, which improves efficiency.
 
 IncA: IncA effectively builds on work like that in Flix by adding explicit support for incremental computation. After running a static analysis, the user can modify the initial set of facts (implicitly modifying the program) and re-execute with some improvements in performance. IncA's approach takes advantage of properties of monotonic operators on lattices to quickly update analysis results for certain types of edits. However, the restrictions that all operators must be monotonic rules out common and important program analysis, such as (examples from above). For instance, IncA's framework could not express (our worked example) - they would instead have to use (different widening operator), which would significantly degrade the strength of the analysis (for reasons).
+
+Reviser: Reviser is similar to Patchwork in that it tracks the graph structure of static analyses to achieve incremental performance games. Reviser uses the IDFS framework, which builds an exploded CFG tracking both control flow and abstract state dependencies in the program. Like Adapton, Reviser identifies portions of the computation changed by an edit and only 'cleans' the graph edges reachable from the edited regions. However, Reviser is tightly coupled with the IDFS framework, and cannot express more general graph-based computations. Moreover, the performance gains from Reviser are entirely from re-computing over a subset of the original graph - the creators indicate that their clean/repropogate algorithm is \textit{slower} than an initial run - as opposed to Adapton's ability to cache and re-use memoized data.
 
 \section{Conclusion}
 
@@ -634,7 +638,7 @@ Existing state-of-the-art approaches to incremental program analysis are not ful
 %% Bibliography
 %\bibliography{bibfile}
 
-
+\newpage
 %% Appendix
 \appendix
 \section{Appendix: Datalog Strategy - Limitations + Comparison}
